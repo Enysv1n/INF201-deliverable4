@@ -44,3 +44,43 @@ class Temperature:
     def unit(self) -> str:
         """The temperature unit (read-only)."""
         return self._unit
+
+    def to_celsius(self) -> float:
+        """Return the temperature in Celsius."""
+        if self._unit == "C":
+            return self._value
+        if self._unit == "F":
+            return (self._value - 32) * 5 / 9
+        return self._value - 273.15
+
+    def to_fahrenheit(self) -> float:
+        """Return the temperature in Fahrenheit."""
+        if self._unit == "F":
+            return self._value
+        if self._unit == "C":
+            return self._value * 9 / 5 + 32
+        return (self._value - 273.15) * 9 / 5 + 32
+
+    def to_kelvin(self) -> float:
+        """Return the temperature in Kelvin."""
+        return self._kelvin_from(self._value, self._unit)
+
+    def convert_to(self, target_unit: str) -> Temperature:
+        """Return a new Temperature converted to target_unit."""
+        if (
+            not isinstance(target_unit, str)
+            or target_unit.upper() not in self.VALID_UNITS
+        ):
+            raise ValueError(
+                f"Invalid unit {target_unit!r}. Must be one of {self.VALID_UNITS}."
+            )
+
+        target_unit = target_unit.upper()
+        converters = {
+            "C": self.to_celsius,
+            "F": self.to_fahrenheit,
+            "K": self.to_kelvin,
+        }
+        return Temperature(converters[target_unit](), target_unit)
+
+    
