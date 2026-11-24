@@ -83,4 +83,40 @@ class Temperature:
         }
         return Temperature(converters[target_unit](), target_unit)
 
-    
+    def __repr__(self) -> str:
+        return f"Temperature({self._value!r}, {self._unit!r})"
+
+    def __str__(self) -> str:
+        symbol = "K" if self._unit == "K" else f"°{self._unit}"
+        return f"{self._value:.2f} {symbol}"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return abs(self.to_kelvin() - other.to_kelvin()) <= self.TOLERANCE
+
+    def __ne__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return not self == other
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self.to_kelvin() < other.to_kelvin() - self.TOLERANCE
+
+    def __le__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self.to_kelvin() <= other.to_kelvin() + self.TOLERANCE
+
+    def __gt__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self.to_kelvin() > other.to_kelvin() + self.TOLERANCE
+
+    def __ge__(self, other: object) -> bool:
+        if not isinstance(other, Temperature):
+            return NotImplemented
+        return self.to_kelvin() >= other.to_kelvin() - self.TOLERANCE
+        
